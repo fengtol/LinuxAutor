@@ -1,19 +1,11 @@
 ﻿# -*- coding: utf-8 -*-
-import base64
 import datetime
-import hashlib
-import hmac
 import json
-import logging
 import os
 import random
 import re
 import shutil
-import sys
-import threading
 import time
-import urllib
-import webbrowser
 
 import requests.exceptions
 import urllib3
@@ -52,16 +44,13 @@ class WindowsLogin():
             with open("config/user.json") as f:
                 user = json.loads(f.read())
                 if "username" in user:
-                    self.username=user["username"]
+                    self.username = user["username"]
                 if "password" in user:
-                    self.password=user["password"]
+                    self.password = user["password"]
                 if "server" in user:
-                    self.server=user["server"]
+                    self.server = user["server"]
                 if "isauto" in user:
-                    self.isauto=user["isauto"]
-
- 
-
+                    self.isauto = user["isauto"]
 
     def re_login(self):
         """
@@ -70,8 +59,8 @@ class WindowsLogin():
         """
         for i in range(5):
             result1 = gameLogin.first_login_usual(
-                self.server, self.username, self.password,self)
-            result2 = gameLogin.second_login(self.host, self.uid,self)
+                self.server, self.username, self.password, self)
+            result2 = gameLogin.second_login(self.host, self.uid, self)
             if result1 and result2:
                 break
             else:
@@ -80,11 +69,11 @@ class WindowsLogin():
     # 首次登录进行处理
     def first_login(self):
         # 先显示自己
-        try: 
+        try:
             # 开启子线程进行数据请求
             if len(self.username) != 0 and len(self.password) != 0:
                 gameData.login_name = self.username.upper()
-                gameLogin.first_login_usual(self.server, self.username, self.password,self)
+                gameLogin.first_login_usual(self.server, self.username, self.password, self)
         except Exception as e:
             log.error("windows第一次登录失败", e)
 
@@ -107,7 +96,6 @@ class WindowsLogin():
             for server in self.server_list:
                 print(str(server["id"])+"-"+server["name"])
 
-             
             # 加入基本服务器
             # index = 0
             # for server in self.server_list:
@@ -115,7 +103,7 @@ class WindowsLogin():
             #     if int(server["id"]) == default_server:
             #         self.cb_server.setCurrentIndex(index)
             #     index += 1
-            ##self.statusBarSignal.emit("登录成功,请选择服务器")
+            # self.statusBarSignal.emit("登录成功,请选择服务器")
             self.first_finish = True
             if self.isauto and self.istart == 0:
                 self.istart += 1
@@ -127,24 +115,26 @@ class WindowsLogin():
             ##self.statusBarSignal.emit("第一次登录deal失败" + str(e))
 
     # 按钮绑定实现,实现第二次登录
-    def second_login(self,default_server):
+    def second_login(self, default_server):
         try:
             if self.first_finish:
-                 
+
                 self.host = self.gethost(default_server)
                 log.info("第二次登录", self.host, self.uid)
-                gameLogin.second_login(self.host, self.uid,self)
+                gameLogin.second_login(self.host, self.uid, self)
             else:
                 pass
-                #self.statusBarSignal.emit("游戏登录错误!无法进入游戏!")
+                # self.statusBarSignal.emit("游戏登录错误!无法进入游戏!")
         except Exception as e:
             #self.statusBarSignal.emit("第二次登录失败" + str(e))
             log.error("第二次登录失败", str(e))
-    def gethost(self,default_server):
+
+    def gethost(self, default_server):
         for server in self.server_list:
-            if str(server["id"])==str(default_server):
+            if str(server["id"]) == str(default_server):
                 return server["host"]
         return ""
+
     def second_login_deal(self, data):
         try:
             # 如果第二次登录出现问题
@@ -153,17 +143,17 @@ class WindowsLogin():
                 self.second_finish = False
                 return False
             # 第二次登录完成
-            #self.statusBarSignal.emit("初始化信息...")
+            # self.statusBarSignal.emit("初始化信息...")
             gameFunction.start_game_function(version=self.version, channel=self.channel,
                                              cookies=self.cookie, server=self.host)
-            #self.statusBarSignal.emit("获取用户信息...")
+            # self.statusBarSignal.emit("获取用户信息...")
             gameData.get_data(version=self.version, channel=self.channel, cookies=self.cookie,
                               server=self.host)
             self.second_finish = True
             if not self.is_sl_login:
                 self.is_sl_login = True
-                #self.statusBarSignal.emit("初始化界面...")
-                #login()
+                # self.statusBarSignal.emit("初始化界面...")
+                # login()
             return True
         except urllib3.exceptions.ReadTimeoutError as e:
             pass
@@ -171,6 +161,7 @@ class WindowsLogin():
         except Exception as e:
             pass
             #self.statusBarSignal.emit("第二次登录错误:" + str(e))
+
 
 class BattleMain:
     """
@@ -213,7 +204,6 @@ class BattleMain:
         self.is_dismantle = False
         self.run_num = 0
         self.run_max_num = 0
-
 
     @staticmethod
     def check_explore():
@@ -305,12 +295,11 @@ class BattleMain:
                             task_add[int(newTask['taskCid'])] = newTask
                     time.sleep(3)
                 gameData.taskInfo.update(task_add)
-                #windows_main.task_data.emit(gameData.taskInfo)  # 游戏任务
+                # windows_main.task_data.emit(gameData.taskInfo)  # 游戏任务
                 log.info("Task Check Complete")
         except Exception as e:
             log.error("Check Task ERROR:", str(e))
             raise
-
 
     @staticmethod
     def getEquipment(cid):
@@ -355,6 +344,7 @@ class BattleMain:
 
         return {"title": "未知物品"}
 
+
 class CampaignMain:
     """
     战役战斗
@@ -397,7 +387,7 @@ class CampaignMain:
         try:
             log.info('=-=-=-=-=-=-Start-=-=-=-=-=-=')
             # 选图页面
-            #windows_main.lt_our_2.clear()
+            # windows_main.lt_our_2.clear()
             time.sleep(3)
             map_data = gameFunction.campaign_get_fleet(maps=self.map)
             self.fleet.clear()
@@ -459,7 +449,7 @@ class CampaignMain:
             set_log(campaign_name[int(maps)] + '  获得:' + reward, 0)
 
             # 更新人物血量信息
-            #windows_main.lt_our_2.clear()
+            # windows_main.lt_our_2.clear()
             for ship in campaign_result['shipVO']:
                 gameData.upgrade_ship(ids=ship['id'], jsons=ship)
             # 更新资源信息
@@ -470,7 +460,7 @@ class CampaignMain:
             gameData.get_campaign_data()
             if len(gameData.Tactics) != 0:
                 gameFunction.getTactics()  # 战术刷新
-                #windows_main.tactics_data.emit(gameData.Tactics)
+                # windows_main.tactics_data.emit(gameData.Tactics)
         except Exception as e:
             log.error('Campaign ERROR:', str(e))
             raise
@@ -513,6 +503,7 @@ class CampaignMain:
             log.info('Finish Repair')
             time.sleep(3)
 
+
 class PvpMain:
     def __init__(self):
         self.team = 0
@@ -523,7 +514,7 @@ class PvpMain:
         self.pvp = "pvp"
         self.friendlist = ""
         self.listfriend = []
-        self.lost5=[] # 5次未能击败的对手id
+        self.lost5 = []  # 5次未能击败的对手id
 
     def main(self, team, formats, night, cv, ss, pvp="pvp", friendlist=""):
         self.team = team + 1
@@ -573,7 +564,7 @@ class PvpMain:
 
             else:
                 for each_td in list_data["list"]:
-                    if each_td['uid'] not in self.listfriend  or each_td['uid']  in self.lost5:
+                    if each_td['uid'] not in self.listfriend or each_td['uid'] in self.lost5:
                         continue
                     resultfriend = gameFunction.friend_visitorFriend(
                         each_td['uid'])
@@ -585,11 +576,11 @@ class PvpMain:
             if len(fight_td) == 0:
                 return False
             # 检测胜率
-            if config_function.cb_flagwin and th_main.Flagship>=5:
+            if config_function.cb_flagwin and th_main.Flagship >= 5:
                 self.lost5.append(fight_td[0][0])
                 set_log("击沉旗舰, 进行跳过该对手："+str(th_main.Flagship), 1)
-                th_main.Flagship=0
-                return            
+                th_main.Flagship = 0
+                return
             # 开始索敌
             fight_td = fight_td[0]
             log.info('{pvp} spy...'.format(pvp=pvp))
@@ -607,7 +598,7 @@ class PvpMain:
             fight_data = gameFunction.pvp_fight(
                 uid=fight_td[0], fleet=self.team, formats=self.format, pvp=pvp)
             # 是否击沉旗舰检测
-            if fight_data['warReport']['hpBeforeNightWarEnemy'][0] != 0 and th_main.Flagship < 5 :
+            if fight_data['warReport']['hpBeforeNightWarEnemy'][0] != 0 and th_main.Flagship < 5:
                 th_main.Flagship = th_main.Flagship+1
                 set_log("宣战未击沉旗舰, 进行SL 次数："+str(th_main.Flagship), 1)
                 log.info(
@@ -627,7 +618,7 @@ class PvpMain:
                 result_data = gameFunction.pvp_get_result(
                     is_night_fight=0, pvp=pvp)
             # 进行结算
-            #windows_main.lt_our_2.clear()
+            # windows_main.lt_our_2.clear()
             gameFunction.updateTaskVo(result_data)
 
             pj = ['-', 'SS', 'S', 'A', 'B', 'C', 'D']
@@ -689,11 +680,12 @@ class PvpMain:
                         {'ship_name': ship_name, 'ship_level': ship_level, 'ship_path': ship_path})
                 data = {'user_name': user_name, 'user_level': uesr_level,
                         'user_pj': user_pj, 'user_ship': user_ship}
-                #windows_add_pvp.add_signal.emit(data)
+                # windows_add_pvp.add_signal.emit(data)
 
         except Exception as e:
             log.error('Upgrade pvp list ERROR:', str(e))
             raise
+
 
 class OtherFunction:
     def __init__(self):
@@ -863,7 +855,7 @@ class OtherFunction:
         if gameData.secretary == 0:
             set_log("未获取到秘书舰id", 0)
             set_log("关闭功能[更换秘书舰]", 0)
-            #windows_main.cb_secretary.setChecked(False)
+            # windows_main.cb_secretary.setChecked(False)
             return
         Secretaryship = gameData.allShip[gameData.secretary]
         if Secretaryship["love"] == Secretaryship["loveMax"]:
@@ -883,8 +875,8 @@ class OtherFunction:
                     Secretaryship["love"])+"/"+str(Secretaryship["loveMax"]), 0)
             else:
                 set_log("关闭功能[更换秘书舰]", 0)
-                config_function.cb_secretary=False
-                #windows_main.cb_secretary.setChecked(False)
+                config_function.cb_secretary = False
+                # windows_main.cb_secretary.setChecked(False)
 
     @staticmethod
     def free_shower(isduwu=False):
@@ -958,7 +950,7 @@ class OtherFunction:
         limit_time = ""
         if False:
 
-            limit_time =0
+            limit_time = 0
             if limit_time != 0:
                 # 检查是否有超时的
                 for dock in gameData.repairDock:
@@ -1067,7 +1059,6 @@ class OtherFunction:
         self.showeron_lock = False
         return -1, other_function.get_min_repair_time()
 
- 
     @staticmethod
     def re_login():
         try:
@@ -1248,7 +1239,7 @@ class OtherFunction:
         # 基础数据导入
 
         log.info('Refreshing base data...')
-        #windows_main.base_data.emit(gameData.__dict__)
+        # windows_main.base_data.emit(gameData.__dict__)
         count.save_count()
         log.info('Refresh base data success!')
 
@@ -1298,11 +1289,7 @@ class OtherFunction:
                 if data != '':
                     speak += '\n更新日志:' + data
                 speak += '\n是否去下载最新版本?'
-                reply = QMessageBox.question(#windows_main, '护萌宝', speak, QMessageBox.Yes | QMessageBox.No,
-                                             QMessageBox.Yes)
-                if reply == QMessageBox.Yes:
-                    webbrowser.open_new_tab(download)
-                    sys.exit(0)
+                print(speak)
             else:
                 return False
         return False
@@ -1321,7 +1308,7 @@ class OtherFunction:
                 name = ship['title']
                 hp = "HP   " + str(ship['hp']) + "/" + str(ship['hpMax'])
                 foe_ship.append({'title': name, 'hp': hp})
-            #windows_main.foe_ship.emit(foe_ship)
+            # windows_main.foe_ship.emit(foe_ship)
             log.info("Refresh finish")
         except Exception as e:
             log.error('Refresh foe ERROR:', str(e))
@@ -1336,7 +1323,7 @@ class OtherFunction:
         log.info("Refreshing our ship data...")
         log.debug(fleet)
         try:
-            #windows_main.tv_fleetName.setText(name)
+            # windows_main.tv_fleetName.setText(name)
             data = []
             for ship in fleet:
                 name = init_data.ship_cid_wu[gameData.allShip[int(
@@ -1349,7 +1336,7 @@ class OtherFunction:
                         init_data.handbook_id[gameData.allShip[int(ship)]['shipCid']])) + ".png"
                 data.append({'title': name, 'hp': hp,
                              'level': level, 'path': path})
-            #windows_main.our_ship.emit(data)
+            # windows_main.our_ship.emit(data)
         except Exception as e:
             log.error('Refresh our ship data ERROR', str(e))
             raise
@@ -1364,7 +1351,7 @@ class OtherFunction:
         log.info("Refreshing our joy ship data...")
         log.debug(fleet)
         try:
-            #windows_main.tv_fleetName.setText(name)
+            # windows_main.tv_fleetName.setText(name)
             data = []
             for ship in fleet:
                 shipdata = gameData.get_joyship(ship)
@@ -1379,14 +1366,12 @@ class OtherFunction:
                             init_data.handbook_id[shipdata['shipCid']])) + ".png"
                 data.append({'title': name, 'hp': hp,
                              'level': level, 'path': path})
-            #windows_main.our_ship.emit(data)
+            # windows_main.our_ship.emit(data)
         except Exception as e:
             log.error('Refresh our ship data ERROR', str(e))
             raise
         log.info("Refresh our ship data finished")
 
- 
- 
     def ai_delay(self, data):
         times = 0
         if 'selfBuffs' in data and len(data['selfBuffs']) != 0:
@@ -1431,13 +1416,14 @@ class OtherFunction:
                         max_time = dock['endTime']
         return max_time
 
+
 class ThMain:
     def __init__(self):
         self.classical_list = []
         self.timer_list = []
         self.is_running = False
         self.now_rw = ''
-        self.automishujian=False
+        self.automishujian = False
         self.set_time_unix = time.mktime(
             datetime.datetime(2021, 7, 1, 0, 0, 0).timetuple())
 
@@ -1555,7 +1541,7 @@ class ThMain:
                             time_change.append(num)
                             if each_timer['type'] == 0:
                                 # 经典刷图
-                                 pass
+                                pass
                             elif each_timer['type'] == 1:
                                 # 演习
                                 classical = {
@@ -1630,7 +1616,7 @@ class ThMain:
                 if len(able_task) != 0 and True:
                     now_rw = able_task[0]['data']
                     index = able_task[0]['index']
- 
+
                     if self.now_rw != now_rw['name']:
                         log.info('Start', now_rw['name'])
                         set_log('开始任务:' + now_rw['name'], 3)
@@ -1641,7 +1627,7 @@ class ThMain:
                         self.num = now_rw['num']
                     if now_rw['type'] == 0:  # 经典出击任务
                         pass
-                
+
                     elif now_rw['type'] == 1:  # 演习任务
                         config = now_rw['data']
                         battle_result = pvp_main.main(formats=config['format'], team=config['fleet'], night=config['night'],
@@ -1725,7 +1711,7 @@ class ThMain:
 
                 else:
                     # 远征任务
-                    if  config_function.cb_secretary:
+                    if config_function.cb_secretary:
                         other_function.autoSecretary()
                     battle_main.check_task()
                     if True:
@@ -1739,7 +1725,7 @@ class ThMain:
 
                         self.pz_num += 1.0
                     battle_main.check_task()
- 
+
                     if time.localtime().tm_hour == 0 and time.localtime().tm_min == 0 and not self.relo:
                         set_log('0点→进行重新登录:', 0)
                         gameData.useSupport = False
@@ -1751,21 +1737,18 @@ class ThMain:
                         other_function.continue_login_award()
             time.sleep(5)
 
-
     def upgrade_list(self):
         # classical [0name, 1type, 2num, 3num_max, 4data]
         # timer [0name, 1type, 2time, 3last_time, 4num, 5num_max, 6data]
         # type  0:经典 1:演习 2:战役
         data = {"rw": self.classical_list, "time": self.timer_list}
 
- 
- 
     def list_save(self):
         with open('./config/classical_list.json', 'w') as f:
             f.write(json.dumps(self.classical_list))
         with open('./config/timer_list.json', 'w') as f:
             f.write(json.dumps(self.timer_list))
- 
+
     def list_read(self):
         if os.path.exists('./config/classical_list.json'):
             with open('./config/classical_list.json', 'r') as f:
@@ -1774,6 +1757,7 @@ class ThMain:
             with open('./config/timer_list.json', 'r') as f:
                 self.timer_list = json.loads(f.read())
         self.upgrade_list()
+
 
 class ConfigFunction:
     """ 
@@ -1789,10 +1773,10 @@ class ConfigFunction:
         self.main_build = {}
         self.qh_ship = []
         self.qh = {}
-        self.cb_free_explore=True
-        self.cb_secretary=False
-        self.cb_flagship=False
-        self.cb_flagwin=False
+        self.cb_free_explore = True
+        self.cb_secretary = False
+        self.cb_flagship = False
+        self.cb_flagwin = False
         self.active_code = {}
 
         if not os.path.exists('config'):
@@ -1821,7 +1805,6 @@ class ConfigFunction:
     def main_save(self):
         log.info('Save main config')
 
-
     def main_read(self):
         log.info('Read main config')
 
@@ -1833,20 +1816,22 @@ class ConfigFunction:
             try:
                 with open('./config/other.json', 'r') as file:
                     data = json.loads(file.read())
- 
+
                 if "cb_free_shower" in data:
-                    self.cb_free_shower=data['cb_free_shower']
- 
+                    self.cb_free_shower = data['cb_free_shower']
+
                 if "cb_secretary" in data:
-                    self.cb_secretary= data['cb_secretary']
+                    self.cb_secretary = data['cb_secretary']
                 if "cb_flagship" in data:
-                    self.cb_flagship=data['cb_flagship']
+                    self.cb_flagship = data['cb_flagship']
                 if "cb_flagwin" in data:
-                    self.cb_flagwin=data['cb_flagwin']
- 
+                    self.cb_flagwin = data['cb_flagwin']
+
             except Exception as e:
                 log.error('Main other read Error', str(e))
                 raise
+
+
 class Count:
     """ 
     统计类
@@ -1976,7 +1961,8 @@ class Count:
 
     def refresh_table(self):
         pass
-        #windows_main.count_data.emit(self.__dict__)
+        # windows_main.count_data.emit(self.__dict__)
+
 
 def login():
     """
@@ -1996,6 +1982,7 @@ def login():
         log.error('Login Error:', str(e))
         return 0
 
+
 def set_log(strs, i):
 
     g.all_log += 1
@@ -2003,6 +1990,7 @@ def set_log(strs, i):
     ##windows_main.log_data.emit({"all_log": g.all_log, "i": i, "strs": strs})
 
     # -------------------------------------
+
 
 # 设置环境变量
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -2018,6 +2006,6 @@ battle_main = BattleMain()
 campaign_main = CampaignMain()
 pvp_main = PvpMain()
 config_function = ConfigFunction()
-#if len(sys.argv)>1:
+# if len(sys.argv)>1:
 
 login()

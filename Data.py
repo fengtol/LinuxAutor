@@ -10,7 +10,6 @@ import random
 import requests
 import base64
 import urllib
-import urllib3
 from Constant import VERSION, RES, HEADER, g, log, init_data
 from Error import error_find, HmError
 from Net import session, HEADER
