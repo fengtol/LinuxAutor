@@ -1,5 +1,6 @@
 
 FROM python:3.7.4-alpine
+ARG TARGETPLATFORM 
 # COPY requReturn_2.py /code/
 ADD ./ /Main
 WORKDIR /Main
