@@ -1,4 +1,4 @@
-FROM python:ad90477b25db
+FROM python
 # COPY requReturn_2.py /code/
 ADD ./ /Main
 WORKDIR /Main
