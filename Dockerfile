@@ -1,4 +1,4 @@
-FROM --platform=linux/arm/v7 python:3.7.4-alpine
+FROM python:ad90477b25db
 # COPY requReturn_2.py /code/
 ADD ./ /Main
 WORKDIR /Main
