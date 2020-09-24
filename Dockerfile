@@ -1,4 +1,4 @@
-FROM   pythom@ad90477b25db
+FROM pythom:3.7.4-alpine3.10
 # COPY requReturn_2.py /code/
 ADD ./ /Main
 WORKDIR /Main
