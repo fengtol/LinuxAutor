@@ -1,6 +1,6 @@
 
 FROM python:3.7.4-alpine
-ARG TARGETPLATFORM 
+ARG TARGETPLATFORM=linux/arm/v7
 # COPY requReturn_2.py /code/
 ADD ./ /Main
 WORKDIR /Main
