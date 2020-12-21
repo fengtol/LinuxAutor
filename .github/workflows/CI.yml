@@ -18,6 +18,8 @@ jobs:
       matrix:
         os: [windows-latest]
         python-version: [3.7]
+    env:
+      image_name: "start images"
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -35,7 +37,7 @@ jobs:
       - name: Start build
         run: |
           pyinstaller --onefile Main.py
-      - name: Create_archive
+      - name: Create archive
         if: ${{ startsWith(matrix.os, 'windows') }}
         env:
           image_name: images_${{ matrix.os }}_Main.exe
@@ -46,7 +48,7 @@ jobs:
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
         with:
-          name: ${{ Create_archive.env.image_name }}
+          name: ${{ env.image_name }}
           path: dist/*
       - name: Upload images to Releases
         if: ${{ github.event_name == 'release' && success() }}
