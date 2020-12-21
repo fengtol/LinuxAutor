@@ -58,7 +58,7 @@ jobs:
           image_name: ${{ matrix.platform.distribution-id }}_Main.exe
         run: |
           cd dist
-          ren Main.exe ${{ env.image_name }}
+          mv Main.exe ${{ env.image_name }}
       - name: Create ubuntu_archive
         if: ${{ startsWith(matrix.platform.distribution-id, 'ubuntu') }}
         env:
