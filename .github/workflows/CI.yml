@@ -37,12 +37,10 @@ jobs:
           distribution-id: windows_x86_64
           distribution-version: ""
           cpu-architecture: x86_64
-    container: ${{ matrix.platform.image }}
     services:
       elasticsearch:
         image: ${{ matrix.platform.image }}
         container_name: elasticsearch
-        restart: always
         volumes:
           - ./:/
         mem_limit: 512m # memory limit
