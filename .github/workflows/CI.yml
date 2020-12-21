@@ -53,10 +53,10 @@ jobs:
       - name: Create macos_archive
         if: ${{ startsWith(matrix.os, 'macos') }}
         env:
-          image_name: ${{ matrix.os }}_Main.dmg
+          image_name: ${{ matrix.os }}_Main
         run: |
           cd dist
-          mv Main.dmg ${{ env.image_name }}
+          mv Main ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
