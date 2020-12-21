@@ -44,12 +44,13 @@ jobs:
         id: Create_archive
         run: |
           cd dist
+          core.setOutput('image_name', ${{ env.image_name }});
           ren Main.exe ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
         with:
-          name: ${{ steps.Create_archive.env.image_name }}
+          name: ${{ steps.Create_archive.outputs.image_name }}
           path: dist/*
       - name: Upload images to Releases
         if: ${{ github.event_name == 'release' && success() }}
