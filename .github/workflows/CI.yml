@@ -38,7 +38,7 @@ jobs:
       - name: Create archive
         if: ${{ startsWith(matrix.os, 'windows') }}
         env:
-          image_name: ${images_{matrix.os}_Main.exe}
+          image_name: images_${{ matrix.os }}_Main.exe
         run: |
           cd dist
           rename Main.exe ${{ env.image_name }}
