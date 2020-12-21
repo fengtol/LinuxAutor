@@ -42,7 +42,6 @@ jobs:
         image: ${{ matrix.platform.image }}
         volumes:
           - ./:/
-        mem_limit: 512m # memory limit
     steps:
       - uses: actions/checkout@v2
       - name: join
