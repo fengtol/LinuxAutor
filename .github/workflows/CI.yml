@@ -38,19 +38,21 @@ jobs:
           distribution-version: ""
           cpu-architecture: x86_64
     container: ${{ matrix.platform.image }}
+    services:
+      elasticsearch:
+        image: ${{ matrix.platform.image }}
+        container_name: elasticsearch
+        restart: always
+        volumes:
+          - ./:/
+        mem_limit: 512m # memory limit
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      # 您可以打印当前 Python 版本以测试矩阵
-      - name: Install dependencies
-        run: |
+      - name: 进入容器
+         run: |
+          docker attach elasticsearch
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
-      - name: Start build
-        run: |
           pyinstaller --onefile Main.py
       - name: Create windows_archive
         if: ${{ startsWith(matrix.platform.distribution-id, 'windows') }}
