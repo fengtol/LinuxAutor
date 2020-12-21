@@ -39,13 +39,6 @@ jobs:
           cpu-architecture: x86_64
     container:
       image: ${{matrix.platform.image}}
-      env:
-        NODE_ENV: development
-      ports:
-        - 80
-      volumes:
-        - ./:./
-      options: --cpus 1
     steps:
       - uses: actions/checkout@v2
       - name: join
