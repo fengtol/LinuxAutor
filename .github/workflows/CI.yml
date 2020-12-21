@@ -48,8 +48,8 @@ jobs:
         mem_limit: 512m # memory limit
     steps:
       - uses: actions/checkout@v2
-      - name: 进入容器
-         run: |
+      - name: join
+        run: |
           docker attach elasticsearch
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
