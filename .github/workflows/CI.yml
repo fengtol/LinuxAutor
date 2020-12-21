@@ -37,11 +37,11 @@ jobs:
           pyinstaller --onefile Main.py
       - name: Create archive
         if: ${{ startsWith(matrix.os, 'windows') }}
+        env:
+          image_name: ${images_{matrix.os}_Main.exe}
         run: |
           cd dist
-          image_name=images_${matrix.os}_main
-          rename main ${image_name}
-          echo "image_name=${image_name}" >> $GITHUB_ENV
+          rename Main.exe ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
