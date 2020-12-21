@@ -40,17 +40,15 @@ jobs:
       - name: Create archive
         if: ${{ startsWith(matrix.os, 'windows') }}
         env:
-          image_name: images_${{ matrix.os }}_Main.exe
-        id: Create_archive
+          image_name: ${{ matrix.os }}_Main.exe
         run: |
           cd dist
-          core.setOutput('image_name', '${{ env.image_name }}');
           ren Main.exe ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
         with:
-          name: ${{ steps.Create_archive.outputs.image_name }}
+          name: ${{ matrix.os }}
           path: dist/*
       - name: Upload images to Releases
         if: ${{ github.event_name == 'release' && success() }}
