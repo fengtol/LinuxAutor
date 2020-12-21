@@ -37,11 +37,15 @@ jobs:
           distribution-id: windows_x86_64
           distribution-version: ""
           cpu-architecture: x86_64
-    services:
-      elasticsearch:
-        image: ${{ matrix.platform.image }}
-        volumes:
-          - ./:/
+    container:
+      image: ${{matrix.platform.image}}
+      env:
+        NODE_ENV: development
+      ports:
+        - 80
+      volumes:
+        - ./:/
+      options: --cpus 1
     steps:
       - uses: actions/checkout@v2
       - name: join
