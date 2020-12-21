@@ -17,64 +17,24 @@ jobs:
     strategy:
       matrix:
         platform:
-        - # Ubuntu 16.04 x86
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1604_x86:latest
-          distribution-id: ubuntu
-          distribution-version: "16.04"
-          cpu-architecture: x86
-        - # Ubuntu 16.04 x86_64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1604_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "16.04"
-          cpu-architecture: x86_64
-        - # Ubuntu 18.04 x86
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: x86
-        - # Ubuntu 18.04 x86_64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: x86_64
-        - # Ubuntu 18.04 arm64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: arm64
-        - # Ubuntu 19.10 x86
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: x86
-        - # Ubuntu 19.10 x86_64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: x86_64
-        - # Ubuntu 19.10 arm64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: arm64
         - # Ubuntu 20.04 x86_64
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
-          distribution-id: ubuntu
+          distribution-id: ubuntu_x86_64
           distribution-version: "20.04"
           cpu-architecture: x86_64
         - # Ubuntu 20.04 arm64
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
-          distribution-id: ubuntu
+          distribution-id: ubuntu_arm64
           distribution-version: "20.04"
           cpu-architecture: arm64
         - # Windows x86
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
-          distribution-id: windows
+          distribution-id: windows_x86
           distribution-version: ""
           cpu-architecture: x86
         - # Windows x86_64
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
-          distribution-id: windows
+          distribution-id: windows_x86_64
           distribution-version: ""
           cpu-architecture: x86_64
     container: ${{ matrix.platform.image }}
