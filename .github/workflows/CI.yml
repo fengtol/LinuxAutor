@@ -12,21 +12,78 @@ on:
 jobs:
   build:
     name: build
-    runs-on: ${{ matrix.os }}
     if: ${{ !(github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest,windows-latest]
-        python-version: [3.7]
-    env:
-      image_name: "start images"
+        platform:
+        - # Ubuntu 16.04 x86
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1604_x86:latest
+          distribution-id: ubuntu
+          distribution-version: "16.04"
+          cpu-architecture: x86
+        - # Ubuntu 16.04 x86_64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1604_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "16.04"
+          cpu-architecture: x86_64
+        - # Ubuntu 18.04 x86
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86:latest
+          distribution-id: ubuntu
+          distribution-version: "18.04"
+          cpu-architecture: x86
+        - # Ubuntu 18.04 x86_64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "18.04"
+          cpu-architecture: x86_64
+        - # Ubuntu 18.04 arm64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "18.04"
+          cpu-architecture: arm64
+        - # Ubuntu 19.10 x86
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86:latest
+          distribution-id: ubuntu
+          distribution-version: "19.10"
+          cpu-architecture: x86
+        - # Ubuntu 19.10 x86_64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "19.10"
+          cpu-architecture: x86_64
+        - # Ubuntu 19.10 arm64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "19.10"
+          cpu-architecture: arm64
+        - # Ubuntu 20.04 x86_64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "20.04"
+          cpu-architecture: x86_64
+        - # Ubuntu 20.04 arm64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
+          distribution-id: ubuntu
+          distribution-version: "20.04"
+          cpu-architecture: arm64
+        - # Windows x86
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
+          distribution-id: windows
+          distribution-version: ""
+          cpu-architecture: x86
+        - # Windows x86_64
+          image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
+          distribution-id: windows
+          distribution-version: ""
+          cpu-architecture: x86_64
+    container: ${{ matrix.platform.image }}
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
-          architecture: 'x86'
+          python-version: 3.7
       # 您可以打印当前 Python 版本以测试矩阵
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
@@ -38,31 +95,24 @@ jobs:
         run: |
           pyinstaller --onefile Main.py
       - name: Create windows_archive
-        if: ${{ startsWith(matrix.os, 'windows') }}
+        if: ${{ startsWith(matrix.platform.distribution-id, 'windows') }}
         env:
-          image_name: ${{ matrix.os }}_Main.exe
+          image_name: ${{ matrix.platform.distribution-id }}_Main.exe
         run: |
           cd dist
           ren Main.exe ${{ env.image_name }}
       - name: Create ubuntu_archive
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.platform.distribution-id, 'ubuntu') }}
         env:
-          image_name: ${{ matrix.os }}_Main
+          image_name: ${{ matrix.platform.distribution-id }}_Main
         run: |
           cd dist
           mv Main ${{ env.image_name }}
-      - name: Create macos_archive
-        if: ${{ startsWith(matrix.os, 'macos') }}
-        env:
-          image_name: ${{ matrix.os }}_Main.dmg
-        run: |
-          cd dist
-          mv Main.dmg ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
         uses: actions/upload-artifact@v2.2.1
         with:
-          name: ${{ matrix.os }}
+          name: ${{ matrix.platform.distribution-id }}
           path: dist/*
       - name: Upload images to Releases
         if: ${{ github.event_name == 'release' && success() }}
