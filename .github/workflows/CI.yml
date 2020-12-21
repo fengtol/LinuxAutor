@@ -44,7 +44,7 @@ jobs:
         id: Create_archive
         run: |
           cd dist
-          core.setOutput('image_name', ${{ env.image_name }});
+          core.setOutput('image_name', '${{ env.image_name }}');
           ren Main.exe ${{ env.image_name }}
       - name: Upload images to Artifact
         if: ${{ github.event_name != 'release' && success() }}
