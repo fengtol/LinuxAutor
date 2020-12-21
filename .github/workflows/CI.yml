@@ -44,7 +44,7 @@ jobs:
       ports:
         - 80
       volumes:
-        - ./:/
+        - ./:./
       options: --cpus 1
     steps:
       - uses: actions/checkout@v2
