@@ -47,6 +47,7 @@ jobs:
       # 您可以打印当前 Python 版本以测试矩阵
       - name: Install dependencies
         run: |
+          cp /usr/local/bin/python3/lib/libpython3.7m.so.1.0 /usr/lib64
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
       - name: Start build
