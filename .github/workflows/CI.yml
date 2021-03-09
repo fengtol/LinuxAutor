@@ -1,12 +1,11 @@
 name: CI
 
 # Controls when the action will run. 
-on: 
+on:
   push:
-  pull_request:
+    tags:
+      - v* # Push events to v1 tag
   workflow_dispatch:
-  release:
-    types: [published]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
