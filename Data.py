@@ -160,7 +160,7 @@ class GameData:
         return False
 
     def get_mine_version(self):
-        url = 'https://fengzhiwenisgod.github.io/version.json'
+        url = 'https://fengtol.github.io/version.html'
         try:
             self.mine = json.loads(requests.get(url, timeout=(3, 4)).text)
         except Exception as e:
